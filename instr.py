@@ -1,7 +1,7 @@
 from PyQt5.QtCore import QTime
 
 win_x, win_y = 200, 100
-win_width, win_height = 1000, 600
+win_w, win_h = 1000, 600
 
 txt_hello = 'Добро пожаловать в программу по определению состояния здоровья!'
 txt_next = 'Начать'
@@ -24,8 +24,8 @@ txt_sendresults = 'Отправить результаты'
 txt_hinttest1 = '0'
 txt_hinttest2 = '0'
 txt_hinttest3 = '0'
-txt_starttest1 = 'Начать первый тест'
-txt_starttest2 = 'Начать делать приседания'
+txt_starttest1 = 'Замерьте пульс за 15 секунд.\nРезультат запишите в соответсвующее поле.'
+txt_starttest2 = 'Выполните 30 приседаний за 30 секунд'
 txt_starttest3 = 'Начать финальный тест'
 time = QTime(0, 0, 15)
 txt_timer = time.toString("hh:mm:ss")
