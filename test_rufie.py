@@ -3,7 +3,22 @@ from PyQt5.QtCore import *
 from instr import *
 p1, p2, p3 = 0, 0 , 0
 
+def error_int(intg):
+    try:
+        return int(intg)
+    except:
+        return False
+class Person():
+    def __init__(self, name, age):
+            self.name = name
+            self.age = age
 
+class Experiment():
+    def __init__(self,person, test1, test2, test3):
+        self.person = person
+        self.test1 = test1
+        self.test2 = test2
+        self.test3 = test3
 
 class InstrScr(QWidget):
     def __init__(self):
@@ -15,10 +30,6 @@ class InstrScr(QWidget):
 
     def connects(self):
         self.btn.clicked.connect(self.next_click)
-
-    def next_click(self):
-        self.ps = PulseScr()
-        self.hide()
 
     def set_appear(self):
         self.setWindowTitle(txt_title)
@@ -47,6 +58,13 @@ class InstrScr(QWidget):
         self.line.addWidget(self.btn, alignment = Qt.AlignCenter)
         self.setLayout(self.line)
 
+    def next_click(self):
+        global name, age
+        name = self.inp_name.text()
+        age = int(self.inp_age.text())
+        self.ps = PulseScr()
+        self.hide()
+
 class PulseScr(QWidget):
     def __init__(self):
         super().__init__()
@@ -57,10 +75,6 @@ class PulseScr(QWidget):
         self.connects()
     def connects(self):
         self.btn_next.clicked.connect(self.next_click)
-
-    def next_click(self):
-        self.ps = CheckSits()
-        self.hide()
 
     def set_appear(self):
         self.setWindowTitle(txt_title)
@@ -83,6 +97,11 @@ class PulseScr(QWidget):
         self.line.addWidget(self.btn_next, alignment = Qt.AlignCenter)
         self.setLayout(self.line)
 
+    def next_click(self):
+        global p1
+        p1 = int(self.line_p1.text())
+        self.ps = CheckSits()
+        self.hide()
 
 class CheckSits(QWidget):
     def __init__(self):
@@ -150,6 +169,9 @@ class PulseScr2(QWidget):
         self.setLayout(self.line)
 
     def next_click(self):
+        global p2, p3
+        p2 = int(self.line_p2.text())
+        p3 = int(self.line_p3.text())
         self.tw = Result()
         self.hide()
 
@@ -166,13 +188,75 @@ class Result(QWidget):
         self.move(win_x, win_y)
 
     def initUi(self):
-        self.w_text = QLabel(txt_workheart)
-        self.i_text = QLabel(txt_index)
+        self.w_text = QLabel(txt_workheart + self.results())
+        self.i_text = QLabel(txt_index + str(self.index))
 
         self.line = QVBoxLayout()
         self.line.addWidget(self.i_text, alignment = Qt.AlignCenter)
         self.line.addWidget(self.w_text, alignment = Qt.AlignCenter)
         self.setLayout(self.line)
+
+    def results(self):
+        if age < 7:
+            self.index = 0
+            return "Нет данных для аткого возраста"
+        self.index = (4 * (p1+p2+p3)-200) / 10
+        
+        if age == 7 or age == 8:
+            if self.index >= 21:
+                return text_res1
+            if self.index <21 and self.index >= 17:
+                return text_res2
+            if self.index <17 and self.index >=12:
+                return text_res3
+            if self.index < 12 and self.index >= 6.5:
+                return text_res4
+            return text_res5
+
+        if age == 9 or age == 10:
+            if self.index >= 19.5:
+                return text_res1
+            if self.index <19.5 and self.index >= 15.5:
+                return text_res2
+            if self.index <15.5 and self.index >=10.5:
+                return text_res3
+            if self.index < 10.5 and self.index >= 5:
+                return text_res4
+            return text_res5
+
+        if age == 11 or age == 12:
+            if self.index >= 18:
+                return text_res1
+            if self.index <18 and self.index >= 14:
+                return text_res2
+            if self.index <14 and self.index >=9:
+                return text_res3
+            if self.index < 9 and self.index >= 3.5:
+                return text_res4
+            return text_res5
+
+        if age == 13 or age == 14:
+            if self.index >= 16.5:
+                return text_res1
+            if self.index <16.5 and self.index >= 12.5:
+                return text_res2
+            if self.index <12.5 and self.index >= 7.5:
+                return text_res3
+            if self.index < 7.5 and self.index >= 2:
+                return text_res4
+            return text_res5
+
+        if age >= 15:
+            if self.index >= 15:
+                return text_res1
+            if self.index <15 and self.index >= 11:
+                return text_res2
+            if self.index <11 and self.index >=6:
+                return text_res3
+            if self.index < 6 and self.index >= 0.5:
+                return text_res4
+            return text_res5
+
 app = QApplication([])
 MW = InstrScr()
 app.exec_()
