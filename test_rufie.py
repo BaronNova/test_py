@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QLineEdit, QHBoxLayout,QVBoxLayout, QPushButton
+from PyQt5.QtWidgets import QMessageBox, QApplication, QWidget, QLabel, QLineEdit, QHBoxLayout,QVBoxLayout, QPushButton
 from PyQt5.QtCore import *
+from PyQt5.QtGui import QFont
 from instr import *
 p1, p2, p3 = 0, 0 , 0
 
@@ -35,6 +36,7 @@ class InstrScr(QWidget):
         self.setWindowTitle(txt_title)
         self.resize(win_w, win_h)
         self.move(win_x, win_y)
+        self.setStyleSheet('background-color: rgb(201,255,195);')
 
     def initUi(self):
         self.lbl_instr = QLabel(txt_instruction)
@@ -43,6 +45,8 @@ class InstrScr(QWidget):
         self.lbl_age= QLabel('Введите возраст')
         self.inp_age = QLineEdit('7')
         self.btn = QPushButton('нАЧАТЬ')
+        self.btn.setStyleSheet('background: rgb(196,255,155);')
+        self.lbl_instr.setFont(QFont(None, 10))
 
         self.line = QVBoxLayout()
         self.h_line_name = QHBoxLayout()
@@ -61,9 +65,18 @@ class InstrScr(QWidget):
     def next_click(self):
         global name, age
         name = self.inp_name.text()
-        age = int(self.inp_age.text())
-        self.ps = PulseScr()
-        self.hide()
+        age = error_int(self.inp_age.text())
+        if age == False or age < 7:
+            msg = QMessageBox()
+            msg.setWindowTitle('Ошибка ввода возраста')
+            msg.setText('Возраст должен быть записан цифрами и больше 7 лет!')
+            msg.setIcon(QMessageBox.Warning)
+            msg.exec_()
+            age=7
+            self.inp_age.setText(str(age))
+        else:
+            self.ps = PulseScr()
+            self.hide()
 
 class PulseScr(QWidget):
     def __init__(self):
@@ -80,7 +93,8 @@ class PulseScr(QWidget):
         self.setWindowTitle(txt_title)
         self.resize(win_w, win_h)
         self.move(win_x, win_y)
-
+        self.setStyleSheet('background-color: rgb(201,255,195)')
+        
     def initUi(self):
         self.init = QLabel('test')
         self.text_vvod = QLabel('Введите результат...')
@@ -96,12 +110,23 @@ class PulseScr(QWidget):
         self.line.addLayout(self.h_line)
         self.line.addWidget(self.btn_next, alignment = Qt.AlignCenter)
         self.setLayout(self.line)
+        self.btn_next.setStyleSheet('background: rgb(196,255,155);')
+        self.instr.setFont(QFont(None, 58))
 
     def next_click(self):
         global p1
-        p1 = int(self.line_p1.text())
-        self.ps = CheckSits()
-        self.hide()
+        p1 = error_int(self.line_p1.text())
+        if p1 == False or p1 < 0:
+            msg = QMessageBox()
+            msg.setWindowTitle('Ошибка пульса')
+            msg.setText('Значение замера пульса не должно быть меньше 0 и сосоять из цифр')
+            msg.setIcon(QMessageBox.Warning)
+            msg.exec_()
+            p1 = 0
+            self.line_p1.setText(str(p1))
+        else:
+            self.ps = CheckSits()
+            self.hide()
 
 class CheckSits(QWidget):
     def __init__(self):
@@ -117,14 +142,17 @@ class CheckSits(QWidget):
         self.setWindowTitle(txt_title)
         self.resize(win_w, win_h)
         self.move(win_x, win_y)
-
+        self.setStyleSheet('background-color: rgb(201,255,195)')
+        
     def initUi(self):
-        self.instr = QLabel(txt_starttest1)
-        self.btn_next = QPushButton(txt_next, self)
+        self.instr = QLabel(txt_starttest2)
+        self.btn_next = QPushButton(txt_next)
+        self.btn_next.setStyleSheet('background: rgb(196,255,155);')
         self.line = QVBoxLayout()
         self.line.addWidget(self.instr, alignment = Qt.AlignCenter)
         self.line.addWidget(self.btn_next, alignment = Qt.AlignCenter)
         self.setLayout(self.line)
+        self.instr.setFont(QFont(None, 30))
 
     def next_click(self):
         self.tw = PulseScr2()
@@ -142,7 +170,8 @@ class PulseScr2(QWidget):
         self.setWindowTitle(txt_title)
         self.resize(win_w, win_h)
         self.move(win_x, win_y)
-
+        self.setStyleSheet('background-color: rgb(201,255,195)')
+        
     def connects(self):
         self.btn_next.clicked.connect(self.next_click)
 
@@ -153,6 +182,8 @@ class PulseScr2(QWidget):
         self.text_p3= QLabel('Введите результат после отдыха:')
         self.line_p3 = QLineEdit('0')
         self.btn_next = QPushButton(txt_next)
+        self.btn_next.setStyleSheet('background: rgb(196,255,155);')
+        self.instr.setFont(QFont(None, 12))
 
         self.line = QVBoxLayout()
         self.h_line_name = QHBoxLayout()
@@ -170,10 +201,28 @@ class PulseScr2(QWidget):
 
     def next_click(self):
         global p2, p3
-        p2 = int(self.line_p2.text())
-        p3 = int(self.line_p3.text())
-        self.tw = Result()
-        self.hide()
+        p2 = error_int(self.line_p2.text())
+        p3 = error_int(self.line_p3.text())
+        if p2 == False or p2 < 0:
+            msg = QMessageBox()
+            msg.setWindowTitle('Ошибка пульса')
+            msg.setText('Значения замеров пульса не должны быть меньше 0 и сосоять из цифр')
+            msg.setIcon(QMessageBox.Warning)
+            msg.exec_()
+            p2 = 0
+            self.line_p2.setText(str(p2))
+
+        elif p3 == False or p3 < 0:
+            msg = QMessageBox()
+            msg.setWindowTitle('Ошибка пульса')
+            msg.setText('Значения замеров пульса не должны быть меньше 0 и сосоять из цифр')
+            msg.setIcon(QMessageBox.Warning)
+            msg.exec_()
+            p3 = 0
+            self.line_p3.setText(str(p3))
+        else:
+            self.tw = Result()
+            self.hide()
 
 class Result(QWidget):
     def __init__(self):
@@ -186,7 +235,8 @@ class Result(QWidget):
         self.setWindowTitle(txt_title)
         self.resize(win_w, win_h)
         self.move(win_x, win_y)
-
+        self.setStyleSheet('background-color: rgb(201,255,195)')
+        
     def initUi(self):
         self.w_text = QLabel(txt_workheart + self.results())
         self.i_text = QLabel(txt_index + str(self.index))
@@ -195,6 +245,8 @@ class Result(QWidget):
         self.line.addWidget(self.i_text, alignment = Qt.AlignCenter)
         self.line.addWidget(self.w_text, alignment = Qt.AlignCenter)
         self.setLayout(self.line)
+        self.i_text.setFont(QFont(None, 56))
+        self.w_text.setFont(QFont(None, 20))
 
     def results(self):
         if age < 7:
